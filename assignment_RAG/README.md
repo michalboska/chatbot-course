@@ -43,7 +43,7 @@ The `vectorize.py` script processes PDF files, extracts text, splits it into chu
 ### Usage
 
 ```bash
-python vectorize.py <path_to_pdf_file> [--reset-index]
+python src/vectorize.py <path_to_pdf_file> [--reset-index]
 ```
 
 #### Parameters:
@@ -54,13 +54,13 @@ python vectorize.py <path_to_pdf_file> [--reset-index]
 ### Example
 
 ```bash
-python vectorize.py documents/research_paper.pdf
+python src/vectorize.py documents/research_paper.pdf
 ```
 
 To reset the index before processing:
 
 ```bash
-python vectorize.py documents/research_paper.pdf --reset-index
+python src/vectorize.py documents/research_paper.pdf --reset-index
 ```
 
 ### Process Flow
@@ -75,7 +75,7 @@ python vectorize.py documents/research_paper.pdf --reset-index
 After vectorizing your documents, you can use the chat system to query the knowledge base:
 
 ```bash
-python chat.py
+python src/chat.py
 ```
 
 This will start an interactive chat session where you can ask questions about the documents you've vectorized.
