@@ -54,13 +54,13 @@ python src/vectorize.py <path_to_pdf_file> [--reset-index]
 ### Example
 
 ```bash
-python src/vectorize.py documents/research_paper.pdf
+python src/vectorize.py Sample1.pdf
 ```
 
 To reset the index before processing:
 
 ```bash
-python src/vectorize.py documents/research_paper.pdf --reset-index
+python src/vectorize.py Sample1.pdf --reset-index
 ```
 
 ### Process Flow
@@ -85,3 +85,7 @@ This will start an interactive chat session where you can ask questions about th
 - **Missing API Keys**: Ensure all required API keys are properly set in your `.env` file
 - **PDF Processing Errors**: Make sure the PDF is not password-protected and is readable
 - **Batch Size Errors**: For large PDFs, the system automatically handles batching to avoid Pinecone limits
+
+## Possible improvements
+
+In the future, we could implement splitting and chunking by chapters. We would store the chapter's name as an additional metadata into the Pinecone index. Chat.py could then cite a particular chapter as its source, in addition to just the entire .pdf file.
