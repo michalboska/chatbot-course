@@ -72,9 +72,10 @@ def generate_response(state: ChatState) -> ChatState:
     research. Refuse to answer questions unrelated to these topics. If an answer to the question is not found in the conversation or context, say you
     don't have an answer and don't try to make up your own.
 
-    When answering questions, always cite your sources. Sources will be provided in the prompt in the form similar to this:
-      [Source 1: <source_pdf_name.pdf>]
-    When citing sources, use the following format:
+    Sources will be provided in the prompt in the form similar to this:
+    [Source 1: <source_pdf_name.pdf>]
+
+    When answering questions, always cite your sources, using the following format:
     "I found this information in <source_pdf_name.pdf>"
     """
     messages.append({"role": "system", "content": system_message})

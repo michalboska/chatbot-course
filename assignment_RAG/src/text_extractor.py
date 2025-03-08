@@ -1,6 +1,19 @@
 import os
 import sys
 import pypdf
+from dataclasses import dataclass
+
+@dataclass
+class Chapter:
+    """
+    Data class representing a chapter or section from a document.
+    
+    Attributes:
+        chapter (str): The title or identifier of the chapter/section
+        content (str): The text content of the chapter/section
+    """
+    chapter: str
+    content: str
 
 class TextExtractor:
     """

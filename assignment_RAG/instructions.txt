@@ -1,3 +1,0 @@
-Cursor instructions:
-
-when generating code, do not output verbose descriptions of the code you are writing. just write the code and nothing else.
