@@ -133,7 +133,7 @@ def open_sources(state: ChatState) -> ChatState:
     """Open the found sources in the web browser."""
     messages = state["messages"]
     web_results = state["web_results"]
-    if len(web_results) == 0:
+    if web_results is None or len(web_results) == 0:
         messages.append({"role": "assistant", "content": "I don't have any sources to open. Please search for information first."})
         return {
             **state,
@@ -141,9 +141,11 @@ def open_sources(state: ChatState) -> ChatState:
         }   
     for result in web_results:
         webbrowser.open(result.link)
+
+    messages.append({"role": "assistant", "content": f"I've opened {len(web_results)} source(s) as tabs in your browser."})
     return {
         **state,
-        "messages": messages.append({"role": "assistant", "content": f"I've opened {len(web_results)} source(s) as tabs in your browser."})
+        "messages": messages
     }
 
 
@@ -202,9 +204,9 @@ def determine_intent(state: ChatState) -> ChatState:
         You are an intent classifier for an architecture and psychology research assistant.
         Classify the user query into one of the following categories:
         - research_question: Questions about research studies, methodologies, or findings
-        - web_search: Requests to search for information online or get latest information
+        - web_search: Requests to search for additional sources or information online
         - general_question: General questions that don't fit other categories
-        - open_sources: Requests to open found sources and references in the web browser
+        - open_sources: Requests to open content in the web browser
         - greeting: Greetings or salutations
         - farewell: Goodbyes or closing remarks
         - help: Requests for help or instructions on using the system
