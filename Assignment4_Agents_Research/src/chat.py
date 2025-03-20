@@ -35,6 +35,7 @@ class ChatState(TypedDict):
     has_research_data: bool
     context: Optional[List[SearchResult]]
     current_query: Optional[str]
+    current_query_response: Optional[str]
     current_document: Optional[str]
     web_results: List[ScholarResult]
 
@@ -79,7 +80,8 @@ def retrieve_web_results(state: ChatState) -> ChatState:
     messages = state["messages"]
     # if no research data, return the state unchanged
     if not state["has_research_data"]:
-        messages.append({"role": "assistant", "content": "I don't have any data to search the web for. Please ask me a question about the relevant topic first."})
+        response = "I don't have any data to search the web for. Please ask me a question about the relevant topic first."
+        messages.append({"role": "assistant", "content": response})
         return {
             **state,
             "messages": messages
@@ -110,15 +112,17 @@ def retrieve_web_results(state: ChatState) -> ChatState:
     if len(web_results) > 0:
         formatted_web_results = [f"{i+1}. {result.title} - {result.link}" for i, result in enumerate(web_results)]
         formatted_results_str = "\n".join(formatted_web_results)
+        response = f"I found the following sources for your search query: {search_query}\n\n{formatted_results_str}\n\nI can open these sources in the web browser for you if you want."
         message = {
             "role": "assistant",
-            "content": f"I found the following sources for your search query: {search_query}\n\n{formatted_results_str}\n\nI can open these sources in the web browser for you if you want."
+            "content": response
         }
         messages.append(message)
     else:
+        response = f"I didn't find any sources for your search query: {search_query}"
         message = {
             "role": "assistant",
-            "content": f"I didn't find any sources for your search query: {search_query}"
+            "content": response
         }
         messages.append(message)    
     
@@ -134,7 +138,8 @@ def open_sources(state: ChatState) -> ChatState:
     messages = state["messages"]
     web_results = state["web_results"]
     if web_results is None or len(web_results) == 0:
-        messages.append({"role": "assistant", "content": "I don't have any sources to open. Please search for information first."})
+        response = "I don't have any sources to open. Please search for information first."
+        messages.append({"role": "assistant", "content": response})
         return {
             **state,
             "messages": messages
@@ -142,7 +147,8 @@ def open_sources(state: ChatState) -> ChatState:
     for result in web_results:
         webbrowser.open(result.link)
 
-    messages.append({"role": "assistant", "content": f"I've opened {len(web_results)} source(s) as tabs in your browser."})
+    response = f"I've opened {len(web_results)} source(s) as tabs in your browser."
+    messages.append({"role": "assistant", "content": response})
     return {
         **state,
         "messages": messages
@@ -187,7 +193,7 @@ def generate_response(state: ChatState) -> ChatState:
     return {
         **state,
         "messages": updated_messages,
-        "current_query": None,  # Reset the current query
+        "current_query_response": assistant_message,
     }
 
 # Function to determine the intent of the user query
@@ -325,8 +331,6 @@ def create_rag_workflow():
 
     return compiled_workflow
 
-
-
 # Function to process a user query
 def process_query(query: str, conversation_state: ChatState) -> ChatState:
     """Process a user query through the RAG workflow."""
@@ -339,7 +343,6 @@ def process_query(query: str, conversation_state: ChatState) -> ChatState:
         
         # Run the workflow with debug enabled to see the flow
         final_state = rag_workflow.invoke(conversation_state, debug=False)
-
         
         return final_state
     except Exception as e:
